@@ -1,25 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>futumorphism as context builder</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-  </style>
-  <link rel="stylesheet" href="./tufte.css" />
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/nix/store/xajdk3kh6khsbqqp4ld0vj12nrf15mky-tufte-css/tufte.min.css">
+  <link rel="stylesheet" href="/nix/store/lbacf3mjz73xbrk8wz9v4h8mj3hvd9jf-tufte-pandoc-srcs/pandoc.css">
+  <link rel="stylesheet" href="./static/extra.css">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
+<article>
+<header>
 <h1 class="title">futumorphism as context builder</h1>
 </header>
 <p>We often have an algebra <code>F (c -&gt; a) -&gt; (c -&gt; a)</code> for doing bottom up evaluation and passing information from the parent nodes down to their children. This tends to creates problems in that one cannot optimize and ignore results of grand-children nodes because they are wrapped in a function. For exmaple</p>
@@ -38,5 +34,12 @@ TermF (Ctx -&gt; Value) -&gt; (Ctx -&gt; Value)
 
 (Ctx, Term) -&gt; Remember Ctx TermF (Ctx, Term)</code></pre>
 <p>where the <code>(c,)</code> functor (in the right argument) holds a cache of the seed that that was given to that node from the parent.</p>
+<div id="tag-links" class="tag-links">
+<p><a href="./programming.html" id="tag-link" class="tag-link" title="programming">(see programming)</a></p>
+<p><a href="./recursion-schemes.html" id="tag-link" class="tag-link" title="recursion-schemes">(see recursion-schemes)</a></p>
+<p><a href="./evaluator.html" id="tag-link" class="tag-link" title="evaluator">(see evaluator)</a></p>
+<p><a href="./haskell.html" id="tag-link" class="tag-link" title="haskell">(see haskell)</a></p>
+</div>
+</article>
 </body>
 </html>
