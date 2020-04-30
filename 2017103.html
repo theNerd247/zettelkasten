@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>evaluation via recursion-schemes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="./tufte.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">evaluation via recursion-schemes</h1>
+</header>
+<p>Evaluation by normalization can be done using recursion schemes:</p>
+<pre><code>data TermF a = ...
+data ValueF a = ...
+
+type Value = Fix ValueF
+
+type Ctx = [Value]
+
+eval&#39; :: Alg TermF (Ctx -&gt; Value)
+
+quote&#39; :: Alg ValueF (LambdaCount -&gt; Term)
+
+eval :: Term -&gt; Term
+eval = ($0) . cata quote&#39; . ($[]) . cata eval&#39;</code></pre>
+<p>See <a href="./2017102.html">(see 2017102)</a></p>
+</body>
+</html>

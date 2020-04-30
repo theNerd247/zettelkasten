@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>futumorphism as context builder</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="./tufte.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">futumorphism as context builder</h1>
+</header>
+<p>We often have an algebra <code>F (c -&gt; a) -&gt; (c -&gt; a)</code> for doing bottom up evaluation and passing information from the parent nodes down to their children. This tends to creates problems in that one cannot optimize and ignore results of grand-children nodes because they are wrapped in a function. For exmaple</p>
+<pre><code>λ.e ⇒ t
+e := t 0
+
+TermF (Ctx -&gt; Value) -&gt; (Ctx -&gt; Value)
+((LambdF e)) = eta &lt;$&gt; e
+  where
+    eta (x -&gt; VApp e (VVar (Local 0))) = e</code></pre>
+<p>η reduction is an optimization when performing top-down evaluation. We can skip evaluating the term <code>0</code> and simply reduce to <code>t</code> as we go down the tree. This saves in better maintaining lazy evaluation.</p>
+<p>However the <code>eta</code> optimization isn’t really an optimization because it’s done AFTER the values are constructed.</p>
+<p>One could argue that it’s a <code>quoting</code> optimization because we reduce the number of recursive calls needed. But can’t we avoid generating needless values that are only thrown away in the long run?</p>
+<p>A better option maybe to use a futumorphism <a href="2016502.md">1</a>? Or something akin to a histomorphism but for going down…</p>
+<pre><code>Remember c f a = Compose ((c,)) f a
+
+(Ctx, Term) -&gt; Remember Ctx TermF (Ctx, Term)</code></pre>
+<p>where the <code>(c,)</code> functor (in the right argument) holds a cache of the seed that that was given to that node from the parent.</p>
+</body>
+</html>

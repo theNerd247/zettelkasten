@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>lambda calculus applications</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="./tufte.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">lambda calculus applications</h1>
+</header>
+<p>Lambda calculus has syntax for function application:</p>
+<pre><code>T₁ T₂</code></pre>
+<p>where <code>T₁</code> and <code>T₂</code> are lambda calculus terms that <strong>must be seperated by spaces</strong>.</p>
+<p>Here are a few examples:</p>
+<pre><code>(λx.x) y
+y (λx.x)
+(λz.x) (y (λa.λb.b))</code></pre>
+<p>Note. We use parenthesis when writing multiple applications together. To avoid extraneous use of parenthesis we assume applications are left associative:</p>
+<pre><code>x y z ≡ (x y) z ≠ x (y z)</code></pre>
+</body>
+</html>
