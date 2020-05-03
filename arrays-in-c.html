@@ -1,0 +1,18 @@
+<p>Arrays in the C programming have always been a softspot for me. They’re simple when you understand basic computer memory models and fun to play with once you’ve learned pointers. Here’s a few facts you need to keep in mind.</p>
+<ul>
+<li>There is no empty array in C</li>
+<li>All arrays must have a predetermined C given to them at compile time<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
+<li>Elements of an array must be of the same memory size. I avoid saying “type” because in C we think in terms of the computer memory model not types from type theory. As such an <code>int[]</code> could very well contain <code>bool</code> values due to casting.</li>
+</ul>
+<p>The first element of an array is stored in a memory cell with a particular address (we’ll call <code>a ∈ N</code>). The second element in the array is stored at an adjecent address (<code>a+1</code>). The empty array doesn’t exist in C.</p>
+<div id="tag-links" class="tag-links">
+<p><a href="./programming.html" id="tag-link" class="tag-link" title="programming">(see programming)</a></p>
+<p><a href="./c.html" id="tag-link" class="tag-link" title="c">(see c)</a></p>
+<p><a href="./datastructures.html" id="tag-link" class="tag-link" title="datastructures">(see datastructures)</a></p>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Ok, not ALL…but most. This touches on dynamic vs static memory…and I don’t want to get into this right now.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>

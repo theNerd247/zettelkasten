@@ -1,0 +1,28 @@
+<p>An F-Algebra is a 3-tuple of categorical objects:</p>
+<ul>
+<li>an endo-functor <code>F : C ⇒ C</code></li>
+<li>a carrier object <code>a ∈ Obj(C)</code></li>
+<li>an evaluator morphism <code>f ∈ Hom(C) : F a → a</code></li>
+</ul>
+<p>Recusive types can be encoded as the fixed point of the functor F. Where <code>Fix</code> represents a type constructor with kind <code>Fix : (* → *) → *</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<pre><code>newtype Fix f = {unFix :: f (Fix f)}</code></pre>
+<p>Lists can then be defined as:</p>
+<pre><code>ListF e a
+  = NilF
+  | ConsF e a
+  deriving (Functor)
+
+type List&#39; a = Fix (ListF a)</code></pre>
+<p>Notice how the <code>ListF</code> is a non-recursive functor wherer we put a hole where the recusive parts are supposed to go. Also by doing this we can see that every List must terminate at some point because <code>NilF</code> is a constructor of <code>ListF</code> that takes no recursive-hole arguments <code>a</code>.</p>
+<div id="tag-links" class="tag-links">
+<p><a href="./recursion-schemes.html" id="tag-link" class="tag-link" title="recursion-schemes">(see recursion-schemes)</a></p>
+<p><a href="./programming.html" id="tag-link" class="tag-link" title="programming">(see programming)</a></p>
+<p><a href="./f-algebras.html" id="tag-link" class="tag-link" title="f-algebras">(see f-algebras)</a></p>
+<p><a href="./haskell.html" id="tag-link" class="tag-link" title="haskell">(see haskell)</a></p>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Notice the kind of <code>Fix</code> is the same as the type for the value-level function <code>fix</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
