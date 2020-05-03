@@ -1,0 +1,64 @@
+<section id="relationship-between-terms-types-and-kinds" class="level1">
+<h1>Relationship between Terms, Types, and Kinds</h1>
+<p>I’ve been observing:</p>
+<ul>
+<li>terms’ syntax is described by the untyped lambda calculus.</li>
+<li>terms by themselves are untyped</li>
+<li>types by themselves are unkinded</li>
+<li>kinds by themselves are unsorted</li>
+<li>…</li>
+</ul>
+<p>term ⇒ types ⇒ kinds</p>
+<table>
+<thead>
+<tr class="header">
+<th>n</th>
+<th><code>xⁿ</code> term</th>
+<th><code>xⁿ⁺¹</code> term</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>term</td>
+<td>types</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>types</td>
+<td>kinds</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>kinds</td>
+<td>sorts</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>sorts</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>Each of these layers has a relationship to the one above it through the relation: <code>xⁿ :ⁿ xⁿ⁺¹</code>.</p>
+<ul>
+<li><p>Can this relation be made universal? Is the following statement true?</p>
+<pre><code>∃ : | ∀n ∈ N. :ⁿ = :</code></pre></li>
+<li><p>Is this a bad idea?<br />
+For the simply typed lambda calculus:</p></li>
+</ul>
+<p><code>:¹   ≡ : T</code> <code>:ⁿ≥¹ ≡ : ()</code></p>
+</section>
+<section id="n-term-language" class="level1">
+<h1><code>n</code> Term Language</h1>
+<p>Each <code>:ⁿ</code> is determined by the language of the right side terms. For example for the simply typed lambda calculus:</p>
+<pre><code>terms ≡ c | x | λx.L | x y (where c is a set of value constants)
+types ≡ T := C | (→) T₁ T₂ (where C is a set of type constants)
+kinds ≡ *                  (a single term)</code></pre>
+<p>So the relation <code>:</code> would be:</p>
+<pre><code>:⁰ ≡ c : C | x : T | (λx.L) : (→) T₁ T₂ | x y : T
+:¹ ≡ T : *</code></pre>
+<div id="tag-links" class="tag-links">
+
+</div>
+</section>

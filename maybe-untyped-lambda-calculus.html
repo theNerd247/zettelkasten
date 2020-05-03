@@ -1,0 +1,29 @@
+<p>So in Haskell <code>Maybe</code> is a type. <code>Maybe : * → *</code> is the relation between <code>Maybe</code> the type and it’s kind (<code>* → *</code>). But, what if we didn’t have function kinds?</p>
+<p>Currently the kind language is:</p>
+<pre><code>kinds ≡ k := * | (→) k k</code></pre>
+<p>But what if we want <code>k' := *</code>? What happens to <code>Maybe</code>?</p>
+<p>Well … let’s start with terms and reconstruct maybe in the untyped lambda calculus<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Then we’ll add on types, then kinds and see where this leads us. First, we don’t have a language yet for data constructors so we’ll need to use church encoding for our data constructors.</p>
+<pre><code>Terms
+nothing :=   λn j. n
+just    := λx n j. j x
+
+Types
+nothing : T₁ → T₂ → T₁
+just    : T₁ → T₂ → (T₁ → T₃) → T₃
+
+Kinds
+nothing : *
+just    : *</code></pre>
+<p>We have a problem with the above types. In the simply typed lambda calculus <code>:</code> is part of the language of terms:</p>
+<pre><code>t := … | λx:T.t | …</code></pre>
+<p>So every term must be assigned a type. But which types? Any type? No, only types that are concrete. This is the simply typed lambda calculus doesn’t allow for <code>∀a. T a</code> types <a href="./kinds-values-types.html">(see kinds-values-types)</a>.</p>
+<div id="tag-links" class="tag-links">
+<p><a href="./lambda-calculus.html" id="tag-link" class="tag-link" title="lambda-calculus">(see lambda-calculus)</a></p>
+<p><a href="./types.html" id="tag-link" class="tag-link" title="types">(see types)</a></p>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>We’re actually using the untyped lambda calculus where <code>c := {()} ∪ N</code> - constants are the unit value and the natural numbers.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>

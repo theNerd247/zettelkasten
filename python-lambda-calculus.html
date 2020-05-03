@@ -1,23 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="generator" content="pandoc">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>python lambda calculus</title>
-  <style type="text/css">code{white-space: pre;}</style>
-  <link rel="stylesheet" href="./tufte.min.css">
-  <link rel="stylesheet" href="./pandoc.css">
-  <link rel="stylesheet" href="./static/extra.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-</head>
-<body>
-<article>
-<header>
-<h1 class="title">python lambda calculus</h1>
-</header>
 <p>Let’s recreate lambda calculus in python.</p>
 <p>Here’s a challenge: write all of your python code using only the simplest language construct you can think of: the function. Oh, and you can only use lambdas<a href="./2016406.html">(see 2016406)</a> because you could cheat in writing recursive functions if you had traditional functions. Ready? Here we go!</p>
 <p>First let’s try and do something simple: the identity function. It’s so simple it doesn’t do anything - just spits back whatever comes in:</p>
@@ -25,9 +5,7 @@
 <p>And using it:</p>
 <pre><code>(lambda (x): x)(2)
 ⇒ 2</code></pre>
-<p>We’re passing in <code>2</code><span><label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle"/><span class="sidenote">Ok, technially we’re cheating; <code>2</code> is something other than a lambda. To keep things understandable I’ll cheat by using some very basic primitives (only numbers, booleans, and their respective operators). But you should know we could very well get rid of them and encode them using only lambdas.<br />
-<br />
-</span></span> to the identity lambda which will evaluate to <code>2</code>. You could think of the lambda function as a vending machine<a href="./2016408.html">(see 2016408)</a>.</p>
+<p>We’re passing in <code>2</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> to the identity lambda which will evaluate to <code>2</code>. You could think of the lambda function as a vending machine<a href="./2016408.html">(see 2016408)</a>.</p>
 <p>Let’s do something more sophisticated: the const function.</p>
 <pre><code>(lambda (x): lambda (y): first)(2)(3)
 ⇒ (lambda (y): 2) (3)
@@ -59,6 +37,9 @@ numbers instead. Const has a lot of moving pieces for a beginner
 <p><a href="./programming.html" id="tag-link" class="tag-link" title="programming">(see programming)</a></p>
 <p><a href="./languages.html" id="tag-link" class="tag-link" title="languages">(see languages)</a></p>
 </div>
-</article>
-</body>
-</html>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Ok, technially we’re cheating; <code>2</code> is something other than a lambda. To keep things understandable I’ll cheat by using some very basic primitives (only numbers, booleans, and their respective operators). But you should know we could very well get rid of them and encode them using only lambdas.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
