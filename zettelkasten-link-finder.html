@@ -8,9 +8,24 @@
 <li>Filter those nodes down with a keyword search relation:</li>
 </ol>
 <ul>
-<li>search should ignore common english words</li>
-<li>by the second step this search will ignore tags that don’t already relate the nodes. But tags that do not already relate the nodes should still be included in the search.</li>
-<li>search result should include pair of note URIs and a set of common tags not already in common.</li>
+<li><p>search should ignore common english words</p></li>
+<li><p>by the second step this search will ignore tags that don’t already relate the nodes. But tags that do not already relate the nodes should still be included in the search.</p></li>
+<li><p>search result should include pair of note URIs and a set of common tags not already in common.</p></li>
+<li><p>search should account for count of keywords in documents to determine strength of search</p></li>
+<li><p>search should ignore:</p>
+<ul>
+<li>code blocks</li>
+<li>links</li>
+<li>headers?</li>
+<li>images</li>
+</ul></li>
+<li><p>search should NOT ignore</p>
+<ul>
+<li>main text blocks (paragraphs)</li>
+<li>footnotes / margin notes</li>
+<li>inline texts</li>
+<li>image captions</li>
+</ul></li>
 </ul>
 <ol type="1">
 <li>Present search results to user and allow manual filtering.</li>

@@ -19,7 +19,9 @@ just    : *</code></pre>
 <pre><code>t := … | λx:T.t | …</code></pre>
 <p>So. a <code>Maybe Int</code> would be written as:</p>
 <pre><code>λx:Int n:Int j:(Int → Int). j x</code></pre>
-<p>I want to</p>
+<p>Now what if we really want polymorphism? Then we’d need to extend to using System-F.</p>
+<pre><code>∀a.∀b.λx:a n:b j:(a → b) . j x </code></pre>
+<p>Here we don’t explicitly state the type of the inputs. Instead we put a type lambda (<code>∀</code>) that turns the 3 variable <code>just</code> into a 5 variable function. The extra 2 variables at the beginning are type variables that are used to form the types of the incoming terms.</p>
 <div id="tag-links" class="tag-links">
 <p><a href="./lambda-calculus.html" id="tag-link" class="tag-link" title="lambda-calculus">(see lambda-calculus)</a></p>
 <p><a href="./types.html" id="tag-link" class="tag-link" title="types">(see types)</a></p>
