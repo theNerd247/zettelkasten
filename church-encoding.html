@@ -22,11 +22,25 @@ cons x xs = \b f -&gt; f x (xs b f)</code></pre>
 <p>This new way of thinking is called a “fold”. A fold is just a way to “evaluate” a datastructure into a single value of some type.</p>
 <p>Here’s an example list constructed from the above Church encoded list:</p>
 <pre><code>one 
-  = cons 1 nill                   (from def. of List&#39;)
+  = cons 1 nill                   (from def. of ListC)
   = \b f -&gt; f 1 ((\b f -&gt; b) b f) (expanding to lambda form)
   = \b f -&gt; f 1 b                 (simplifying inner redux)</code></pre>
 <p>Notice what <code>cons 1 nill</code> turns into: a function that calls <code>f</code> with <code>1</code> and <code>b</code>. It’s like this new form goes ahead and wires our logic of how to handle this list into the values of the list. Here’s what I mean.</p>
-<p>Let’s say that you want <code></code></p>
+<p>Let’s say that you want to count the elements in a list. To solve this let’s just think about the return type. What type describes the result of counting a list? Of course! Natural numbers<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>! So we need a function of type <code>ListC a b → Nat</code>. What should we put for the <code>b</code> type? Well look at the definition of <code>ListC</code>. The <code>b</code> reprents the result of evaluating our list, in this case <code>Nat</code>. So our function will be:</p>
+<pre><code>countL :: ListC a Nat → Nat
+countL = ???</code></pre>
+<p>So how do we count this list? Well let’s take each case in mind. What happens if the list is empty? Then we return <code>0</code>. But because our <code>ListC</code> doesn’t have a constructor for the empty list we can’t just pattern match on the incoming list to see if it’s empty. And it would be unwise to have a separate function to check if the list is empty or not<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Remember the definition of our <code>ListC</code>. It is a function that takes in the result for when the list is empty, and a function for what to do when the list is not empty. So all we need to do in order to handle the empty case is to pass our default value to this function:</p>
+<pre><code>countL :: ListC a Nat → Nat
+countL list = list 0 ??? </code></pre>
+<p>And if it’s not empty? Well by the definition of <code>ListC</code> someone who created the list we’re evaluating would have already done the work of extracting the head and tail from the list. All we need to do is write a function of type <code>a → b → b</code> or in this case <code>a → Nat → Nat</code>. This function, which we define, tells the list function what to do with a single element of the list and the result after having evaluated the rest of the list already. Here’s that function:</p>
+<pre><code>increaseSize :: a → Nat → Nat
+increaseSize a sizeOfTail = 1 + sizeOfTail</code></pre>
+<p>And to tie everything together we pass the <code>increaseSize</code> function as the second argument of the list. Here’s everything in one snapshot:</p>
+<pre><code>countL :: ListC a Nat → Nat
+countL list = list 0 increaseSize 
+
+increaseSize :: a → Nat → Nat
+increaseSize a sizeOfTail = 1 + sizeOfTail</code></pre>
 <div id="tag-links" class="tag-links">
 <p><a href="./lambda-calculus.html" id="tag-link" class="tag-link" title="lambda-calculus">(see lambda-calculus)</a></p>
 <p><a href="./datastructures.html" id="tag-link" class="tag-link" title="datastructures">(see datastructures)</a></p>
@@ -37,5 +51,7 @@ cons x xs = \b f -&gt; f x (xs b f)</code></pre>
 <ol>
 <li id="fn1" role="doc-endnote"><p>For the curious this is done using pointers <a href="./arrays-in-c.html">(see arrays-in-c)</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>This is extremely related to F-Algebras and encoding recursive types with them<a href="./f-algebras-recursive-types.html">(see f-algebras-recursive-types)</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>No! Not <code>Int</code> or <code>Num</code>! Why? <code>Int</code> contains negatives. <code>Num</code> could be a decimal! We don’t want bugs creeping into our code where we could have a list of length 0.5 or -2. Natural numbers are: 0, 1, 2, …<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>This isn’t Java or some other imperative language. If statements can typically be avoided in functional programming.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

@@ -1,0 +1,32 @@
+<section id="algorithm" class="level1">
+<h1>Algorithm</h1>
+<p><code>ConnectKeyword :: Notes -&gt; Notes</code></p>
+<ol type="1">
+<li>Take notes and form a graph <code>Graph Note</code></li>
+<li>Insert edges formed via tags.</li>
+<li>Gather all pairs of nodes in the graph that satisfy the unreachable relation.</li>
+<li>Filter those nodes down with a keyword search relation:</li>
+</ol>
+<ul>
+<li>search should ignore common english words</li>
+<li>by the second step this search will ignore tags that don’t already relate the nodes. But tags that do not already relate the nodes should still be included in the search.</li>
+<li>search result should include pair of note URIs and a set of common tags not already in common.</li>
+</ul>
+<ol type="1">
+<li>Present search results to user and allow manual filtering.</li>
+<li>Generate document entries for each search result</li>
+<li>Modify respective files for each generated document entry</li>
+</ol>
+</section>
+<section id="properties" class="level1">
+<h1>Properties</h1>
+<ol type="1">
+<li><code>ConnectKeyword Notes = Notes | Graph(Notes) is connected</code></li>
+<li><code>ConnectKeyword Notes = Notes | User input is ignored</code></li>
+</ol>
+<div id="tag-links" class="tag-links">
+<p><a href="./algorithm.html" id="tag-link" class="tag-link" title="algorithm">(see algorithm)</a></p>
+<p><a href="./zettelkasten.html" id="tag-link" class="tag-link" title="zettelkasten">(see zettelkasten)</a></p>
+<p><a href="./graphs.html" id="tag-link" class="tag-link" title="graphs">(see graphs)</a></p>
+</div>
+</section>
