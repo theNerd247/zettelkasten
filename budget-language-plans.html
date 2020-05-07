@@ -1,0 +1,125 @@
+<section id="current-workflow" class="level1">
+<h1>Current Workflow</h1>
+<p>Download CSV ↓ Parse CSV files into a ledger (assigns transactions to accounts using description text) ↓ Validation script runs ↓ Apply an overlays file (manual transactions) ←──────────────┐ ↓ │ Apply Budget file (contains only pseudo transactions) │ ↓ │ General Reports ────────────────────────────────────────────┘</p>
+</section>
+<section id="sample-syntax-bits" class="level1">
+<h1>Sample Syntax Bits</h1>
+<pre><code>foodBudget : Transactions -&gt; Bool
+foodBudget = 
+  \transactions -&gt; 
+       filterByAccountName &quot;expenses:food&quot; 
+    .&gt; filterByDateRange (lastMonth, endOfThisMonth)
+    .&gt; accountSum 
+    .&gt; (&lt; $100)</code></pre>
+<pre><code>foodBudget = simpleBudget 
+  expenses:food 
+  (2nd of month starting 2020-02) 
+  $100.00</code></pre>
+<pre><code>foodImports = imports (from assets:checking to expenses:food)
+  [ description /Costco/ &amp;&amp; amount &lt; 200
+  , description /Kroger/ 
+  , description /pizza/
+  ]</code></pre>
+<pre><code>churchImports = imports (toAccount expenses:church)
+  [ description &#39;&#39;
+  ]</code></pre>
+<pre><code># Planning for giving to church
+# This combines budgeting an amount as well as an CSV importer statement
+givingPlanning =
+  expect  
+    amount = $813.25  ───────────────────────────────────┐
+      &amp;&amp; isEFT                Import Modifier / Query Statement (Predicate?) 
+      &amp;&amp; desc /Breeze/                                   │
+      &amp;&amp; between 2020-03-12 + 7d                         │
+      &amp;&amp; assets:checking ~&gt; expenses:church:giving ──────┘</code></pre>
+<p>I really like this. It’s straight and to the point and gives a more explicit statement of what I expect to happen. This would essentially produce 2 statements:</p>
+<pre><code># Here the query is the same as above but the account query is removed
+# and is turned into a transaction modifier. This is what would run
+# on the import side of things.
+givingPlanningImport = import
+    amount = $813.25 
+      &amp;&amp; isEFT 
+      &amp;&amp; desc /Breeze/
+      &amp;&amp; between 2020-03-12 + 7d
+    (from assets:checking . to expenses:church:giving) 
+
+# This is the generated budget. It only includes the amount
+# and a general account to/from statement. This would capture
+# ALL transactions within this account for that time period.  
+givingPlanningBudget = 
+  amount = $813.25 
+  between 2020-03-12 + 7d
+  assets:checking ~&gt; expenses:church:giving</code></pre>
+<p>This makes me wonder if using <code>expect</code> would provide more information than just “You met / did not meet” for this account. Instead <code>expect</code> would look for specific transactions regardless of the account. Furthermore a transaction is a its query. For example: having a statement that says “assets:checking ~&gt; expenses:food” (desc /burger/ || desc /pizza/ || desc /Kroger/ || etc.) is just applying a morphism over a sub-set of the transactions (those that match the given query. So then The transactions <code>assets:checking ~&gt; expenses:food</code> are 1-1 with the query - the query is the transactions. An account is just the transaction sets over all queries that contain the account name in either the <code>from</code> or <code>to</code> part of the modifier. To summarize:</p>
+<ul>
+<li>transactions 1-1 with queries</li>
+<li>accounts are queries over transactions This brings up 2 questions:</li>
+</ul>
+<ol type="1">
+<li>How do I make a budget for an account?</li>
+<li>How do I account for the unexpected. If I formulate budgets using <code>expect</code> then I know i’ve met that budget if the query returns a non-empty set of transactions. Here’s an example:</li>
+</ol>
+<pre><code>foodBudetMay2020 = expect
+       isFoodExpense
+    &amp;&amp; between 2020-03-01+1mo 
+    &amp;&amp; totalAmount &lt;= $350.00
+
+isFoodExpense = expect
+  anyOf
+    [ desc /Kroger/
+    , desc /Publix/
+    , desc /Costco/ &amp;&amp; amount &lt; $150
+    ]
+  &amp;&amp; assets:checking ~&gt; expenses:food</code></pre>
+<p>To verify a query is correct:</p>
+<pre><code>simulate foodBudetMay2020 </code></pre>
+</section>
+<section id="query-model" class="level1">
+<h1>Query Model</h1>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">-- the input is the set of transactions currently</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co">-- being queried (previous state). Updated state </span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">-- is the left over transactions to run along with </span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">-- the left over transactions to query with next</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="dt">Query</span><span class="ot"> ::</span> <span class="dt">State</span> <span class="dt">Transactions</span> <span class="dt">Transactions</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="op">&amp;&amp;</span>, <span class="op">||</span><span class="ot">            ::</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>(<span class="op">&lt;</span>, <span class="op">&lt;=</span>, <span class="ot">=</span>, <span class="op">&gt;=</span>, <span class="op">&gt;</span>)<span class="ot"> ::</span> <span class="dt">Amount</span> <span class="ot">-&gt;</span> <span class="dt">Amount</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span> </span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="ot">between           ::</span> <span class="dt">DateRange</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="fu">not</span><span class="ot">               ::</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="ot">desc              ::</span> <span class="dt">Regex</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="ot">from              ::</span> <span class="dt">Account</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="ot">to                ::</span> <span class="dt">Acount</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="ot">(~&gt;)              ::</span> <span class="dt">Account</span> <span class="ot">-&gt;</span> <span class="dt">Account</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="ot">modify            ::</span> (<span class="dt">Transaction</span> <span class="ot">-&gt;</span> <span class="dt">Transaction</span>) <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="ot">amount            ::</span> (<span class="dt">Amount</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="ot">totalAmount       ::</span> (<span class="dt">Amount</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="ot">simulate          ::</span> <span class="dt">DateRange</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="ot">simulateRegex     ::</span> <span class="dt">Regex</span> <span class="ot">-&gt;</span> <span class="dt">String</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a><span class="ot">simulateTrans     ::</span> <span class="dt">Date</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Transaction</span></span>
+<span id="cb9-21"><a href="#cb9-21"></a></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="dt">Text</span><span class="ot">    ::</span> <span class="dt">Text</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="dt">Num</span><span class="ot">     ::</span> <span class="dt">Double</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="dt">Bool</span><span class="ot">    ::</span> <span class="dt">Bool</span></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="dt">Regex</span><span class="ot">   ::</span> <span class="dt">Regex</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="dt">Account</span><span class="ot"> ::</span> <span class="dt">NonEmpty</span> <span class="dt">Text</span></span>
+<span id="cb9-27"><a href="#cb9-27"></a></span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="co">-- It might be useful to make Queries 1st class citizens...</span></span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="ot">named      ::</span> <span class="dt">Text</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span>
+<span id="cb9-30"><a href="#cb9-30"></a><span class="ot">appendName ::</span> <span class="dt">Text</span> <span class="ot">-&gt;</span> <span class="dt">Query</span> <span class="ot">-&gt;</span> <span class="dt">Query</span></span></code></pre></div>
+</section>
+<section id="syntax-features" class="level1">
+<h1>Syntax Features</h1>
+<p>Comments: only <code>#</code> character at beginning of line - maybe rest of line?</p>
+<p><code>from</code> and <code>to</code> in the context of an import are modifiers - they change the matching transactions <code>from</code> and <code>to</code> fields. In the context of <code>budget</code> they are predicates.</p>
+<p><code>expect</code> budget $$$ as well as create an importer statement. This is usefull for 1-off planning for unique events. This happens because planning for a specific amount implies an import statement with the same amount.</p>
+<p><code>between</code> allows budgets stating when we expect a transaction to occur. This allows the user to account for things like a transaction appearing late in their bank account. For example I expect to pay for BCM at costco this saturday but allow for 5 days for that transaction to occur</p>
+<p><code>amount</code> would query the amount for a single transaction</p>
+<p><code>totalAmount</code> would query the sum total of transactions.</p>
+<p><code>~&gt;</code> could be a short hand for <code>from acc to acc</code> statements.</p>
+<p><code>simulate</code> would be a function taking a query and then generating a set of transactions such that the given query holds. This means we’ll need a way to generate strings from a regex such that the regex matches that string.</p>
+<div id="tag-links" class="tag-links">
+<p><a href="./programming.html" id="tag-link" class="tag-link" title="programming">(see programming)</a></p>
+<p><a href="./languages.html" id="tag-link" class="tag-link" title="languages">(see languages)</a></p>
+<p><a href="./budget.html" id="tag-link" class="tag-link" title="budget">(see budget)</a></p>
+</div>
+</section>
