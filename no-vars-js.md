@@ -1,6 +1,6 @@
 # JavaScript with No ...Variables?
 Let's have some fun. Take the following javascript code and re-write it such
-that there are internally declared variables.
+that there are no `const` keywords used.
 
 ```javascript
 const modifyPair = pair => {
